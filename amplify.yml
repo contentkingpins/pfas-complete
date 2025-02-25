@@ -3,11 +3,11 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
+        - echo "Skipping preBuild phase, using custom build script"
     build:
       commands:
-        - echo "Skipping linting during build"
-        - npm run build
+        - echo "Running custom build script"
+        - bash ./amplify-build.sh
   artifacts:
     baseDirectory: .next
     files:

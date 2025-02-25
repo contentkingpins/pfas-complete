@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:no-lint": "DISABLE_ESLINT_PLUGIN=true next build"
   },
   "dependencies": {
     "@aws-sdk/client-location": "^3.529.1",

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployment Instructions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2563eb;
+        }
+        h2 {
+            color: #dc2626;
+        }
+        pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
+            background-color: #f1f1f1;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .note {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Deployment Instructions for PFAS Claim Website</h1>
+    
+    <h2>Issue</h2>
+    <p>The build is failing with the following error:</p>
+    <pre>You're importing a component that needs `useEffect`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.</pre>
+    
+    <h2>Changes Made</h2>
+    <p>We've made the following changes to fix the issue:</p>
+    <ol>
+        <li>Added <code>"use client"</code> directive to <code>src/app/layout.tsx</code></li>
+        <li>Moved metadata to a separate file: <code>src/app/metadata.ts</code></li>
+        <li>Created client components for functionality that requires client-side hooks:
+            <ul>
+                <li><code>ViewportHeightFix.tsx</code>: Handles the 100vh issue on mobile browsers</li>
+                <li><code>MobileNav.tsx</code>: Handles the mobile navigation menu with its state</li>
+                <li><code>Footer.tsx</code> (CopyrightYear): Handles the dynamic year in the footer</li>
+            </ul>
+        </li>
+        <li>Updated <code>amplify-build.sh</code> to ensure it works correctly</li>
+    </ol>
+    
+    <h2>How to Deploy</h2>
+    <p>Follow these steps to deploy the changes:</p>
+    <ol>
+        <li>Open a terminal or command prompt</li>
+        <li>Navigate to the project directory:
+            <pre>cd "C:\Users\asieg\pfas completed\pfas-claim-website"</pre>
+        </li>
+        <li>Add all changes to Git:
+            <pre>git add .</pre>
+        </li>
+        <li>Commit the changes:
+            <pre>git commit -m "Fix client component issues in layout.tsx"</pre>
+        </li>
+        <li>Push the changes to GitHub:
+            <pre>git push</pre>
+        </li>
+    </ol>
+    
+    <div class="note">
+        <p><strong>Note:</strong> If you're having issues with Git commands, you can also use the GitHub Desktop application or the GitHub web interface to commit and push the changes.</p>
+    </div>
+    
+    <h2>Alternative: Manual Deployment</h2>
+    <p>If you prefer to deploy manually:</p>
+    <ol>
+        <li>Log in to the AWS Management Console</li>
+        <li>Navigate to AWS Amplify</li>
+        <li>Select your PFAS claim website application</li>
+        <li>Click on the "Redeploy this version" button or "Start a new build"</li>
+    </ol>
+    
+    <h2>Verification</h2>
+    <p>After deployment, verify that the website is working correctly by:</p>
+    <ol>
+        <li>Visiting the deployed URL</li>
+        <li>Testing the mobile navigation</li>
+        <li>Checking that the viewport height fix is working on mobile devices</li>
+        <li>Verifying that the copyright year in the footer is displayed correctly</li>
+    </ol>
+</body>
+</html> 

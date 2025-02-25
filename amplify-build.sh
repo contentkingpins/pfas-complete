@@ -1,13 +1,18 @@
 #!/bin/bash
 # Custom build script for AWS Amplify
 
+export NEXT_DISABLE_ESLINT=1
+export NEXT_DISABLE_TYPESCRIPT=1
+
 echo "Installing dependencies..."
 npm ci
 
-echo "Setting environment variables to disable ESLint and TypeScript checking..."
-export DISABLE_ESLINT_PLUGIN=true
-export NEXT_DISABLE_ESLINT=1
-export NEXT_DISABLE_TYPESCRIPT=1
+echo "Adding \"use client\" directive to layout.tsx if not already present..."
+if ! grep -q "use client" src/app/layout.tsx; then
+  echo '"use client";' > temp_file
+  cat src/app/layout.tsx >> temp_file
+  mv temp_file src/app/layout.tsx
+fi
 
 echo "Building the application..."
 npm run build

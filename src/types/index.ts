@@ -55,7 +55,7 @@ export interface InjuryInfo {
 
 export interface ExposureInfo {
   isCurrentlyInContaminationZone: boolean;
-  pastLocations?: string[];
+  pastLocations?: string;
   workplaceDetails?: string;
   militaryServiceHistory?: string;
   exposureDuration?: string;

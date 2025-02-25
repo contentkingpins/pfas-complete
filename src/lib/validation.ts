@@ -58,7 +58,7 @@ export const injuryInfoSchema = z.object({
 // Exposure Information validation schema
 export const exposureInfoSchema = z.object({
   isCurrentlyInContaminationZone: z.boolean(),
-  pastLocations: z.array(z.string()).optional(),
+  pastLocations: z.string().optional(),
   workplaceDetails: z.string().optional(),
   militaryServiceHistory: z.string().optional(),
   exposureDuration: z.string().optional(),
@@ -66,15 +66,15 @@ export const exposureInfoSchema = z.object({
   (data) => {
     if (!data.isCurrentlyInContaminationZone) {
       return (
-        (data.pastLocations && data.pastLocations.length > 0) ||
-        !!data.workplaceDetails ||
-        !!data.militaryServiceHistory
+        (data.pastLocations && data.pastLocations.trim().length > 0) ||
+        (data.workplaceDetails && data.workplaceDetails.trim().length > 0) ||
+        (data.militaryServiceHistory && data.militaryServiceHistory.trim().length > 0)
       );
     }
     return true;
   },
   {
-    message: 'Please provide information about your exposure',
+    message: 'Please provide information about your exposure in at least one of the fields below',
     path: ['pastLocations'],
   }
 );

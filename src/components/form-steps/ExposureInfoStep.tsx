@@ -42,33 +42,36 @@ const ExposureInfoStep: React.FC<ExposureInfoStepProps> = ({ geolocationData }) 
         )}
       />
       
-      {!isCurrentlyInContaminationZone && (
-        <>
+      {/* Always show these fields, but mark them as required only when not in contamination zone */}
+      <Controller
+        name="exposureInfo.pastLocations"
+        control={control}
+        render={({ field }) => (
           <FormTextarea
-            label="Past Locations"
-            {...register('exposureInfo.pastLocations')}
+            label={`Past Locations ${!isCurrentlyInContaminationZone ? '(Required)' : ''}`}
             error={errors.exposureInfo?.pastLocations?.message}
             placeholder="List any past locations where you may have been exposed to PFAS (e.g., cities, military bases, etc.)"
             helperText="Please include dates if possible"
+            {...field}
           />
-          
-          <FormTextarea
-            label="Workplace Details"
-            {...register('exposureInfo.workplaceDetails')}
-            error={errors.exposureInfo?.workplaceDetails?.message}
-            placeholder="Describe any workplaces where you may have been exposed to PFAS chemicals"
-            helperText="Include company names, locations, and your job roles"
-          />
-          
-          <FormTextarea
-            label="Military Service History"
-            {...register('exposureInfo.militaryServiceHistory')}
-            error={errors.exposureInfo?.militaryServiceHistory?.message}
-            placeholder="If applicable, provide details about your military service"
-            helperText="Include branch, bases, and dates of service"
-          />
-        </>
-      )}
+        )}
+      />
+      
+      <FormTextarea
+        label={`Workplace Details ${!isCurrentlyInContaminationZone ? '(Required if no other exposure info provided)' : ''}`}
+        {...register('exposureInfo.workplaceDetails')}
+        error={errors.exposureInfo?.workplaceDetails?.message}
+        placeholder="Describe any workplaces where you may have been exposed to PFAS chemicals"
+        helperText="Include company names, locations, and your job roles"
+      />
+      
+      <FormTextarea
+        label={`Military Service History ${!isCurrentlyInContaminationZone ? '(Required if no other exposure info provided)' : ''}`}
+        {...register('exposureInfo.militaryServiceHistory')}
+        error={errors.exposureInfo?.militaryServiceHistory?.message}
+        placeholder="If applicable, provide details about your military service"
+        helperText="Include branch, bases, and dates of service"
+      />
       
       <FormInput
         label="Estimated Exposure Duration"

@@ -36,6 +36,10 @@ const ClaimForm: React.FC<ClaimFormProps> = ({ geolocationData }) => {
       },
       exposureInfo: {
         isCurrentlyInContaminationZone: geolocationData?.isContaminated || false,
+        pastLocations: '',
+        workplaceDetails: '',
+        militaryServiceHistory: '',
+        exposureDuration: '',
       },
       legalInfo: {
         hasLegalRetainer: false,

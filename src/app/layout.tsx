@@ -37,9 +37,9 @@ export default function RootLayout({
             <nav className="hidden sm:block">
               <ul className="flex space-x-6">
                 <li><Link href="/" className="text-gray-700 hover:text-red-600">Home</Link></li>
-                <li><Link href="#about" className="text-gray-700 hover:text-red-600">About PFAS</Link></li>
-                <li><Link href="#qualify" className="text-gray-700 hover:text-red-600">Do I Qualify?</Link></li>
-                <li><Link href="#contact" className="text-gray-700 hover:text-red-600">Contact</Link></li>
+                <li><Link href="/about" className="text-gray-700 hover:text-red-600">About PFAS</Link></li>
+                <li><Link href="/eligibility" className="text-gray-700 hover:text-red-600">Do I Qualify?</Link></li>
+                <li><Link href="/contact" className="text-gray-700 hover:text-red-600">Contact</Link></li>
               </ul>
             </nav>
           </div>
@@ -63,9 +63,9 @@ export default function RootLayout({
                 <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Quick Links</h3>
                 <ul className="space-y-2">
                   <li><Link href="/" className="text-gray-300 hover:text-white text-sm sm:text-base">Home</Link></li>
-                  <li><Link href="#about" className="text-gray-300 hover:text-white text-sm sm:text-base">About PFAS</Link></li>
-                  <li><Link href="#qualify" className="text-gray-300 hover:text-white text-sm sm:text-base">Eligibility</Link></li>
-                  <li><Link href="#contact" className="text-gray-300 hover:text-white text-sm sm:text-base">Contact Us</Link></li>
+                  <li><Link href="/about" className="text-gray-300 hover:text-white text-sm sm:text-base">About PFAS</Link></li>
+                  <li><Link href="/eligibility" className="text-gray-300 hover:text-white text-sm sm:text-base">Eligibility</Link></li>
+                  <li><Link href="/contact" className="text-gray-300 hover:text-white text-sm sm:text-base">Contact Us</Link></li>
                 </ul>
               </div>
               

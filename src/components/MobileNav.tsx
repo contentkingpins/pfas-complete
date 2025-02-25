@@ -34,7 +34,7 @@ export default function MobileNav() {
             </li>
             <li>
               <Link 
-                href="#about" 
+                href="/about" 
                 className="block text-gray-700 hover:text-red-600 py-2 px-4 hover:bg-gray-50 rounded-md"
                 onClick={() => setIsOpen(false)}
               >
@@ -43,7 +43,7 @@ export default function MobileNav() {
             </li>
             <li>
               <Link 
-                href="#qualify" 
+                href="/eligibility" 
                 className="block text-gray-700 hover:text-red-600 py-2 px-4 hover:bg-gray-50 rounded-md"
                 onClick={() => setIsOpen(false)}
               >
@@ -52,7 +52,7 @@ export default function MobileNav() {
             </li>
             <li>
               <Link 
-                href="#contact" 
+                href="/contact" 
                 className="block text-gray-700 hover:text-red-600 py-2 px-4 hover:bg-gray-50 rounded-md"
                 onClick={() => setIsOpen(false)}
               >

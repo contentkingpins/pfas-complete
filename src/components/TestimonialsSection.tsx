@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import TestimonialCard, { Testimonial } from './TestimonialCard';
 import { GeolocationResponse } from '@/types';
+import Link from "next/link";
 
 // Base testimonials data
 const baseTestimonials: Testimonial[] = [
@@ -221,12 +222,12 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ geolocationDa
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1 }}
           >
-            <a 
+            <Link 
               href="/" 
               className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
             >
               Check Your Eligibility Now
-            </a>
+            </Link>
           </motion.div>
         </div>
       </div>

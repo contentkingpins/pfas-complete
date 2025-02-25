@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -25,10 +26,10 @@ export default function RootLayout({
             </div>
             <nav>
               <ul className="flex space-x-6">
-                <li><a href="/" className="text-gray-700 hover:text-red-600">Home</a></li>
-                <li><a href="#about" className="text-gray-700 hover:text-red-600">About PFAS</a></li>
-                <li><a href="#qualify" className="text-gray-700 hover:text-red-600">Do I Qualify?</a></li>
-                <li><a href="#contact" className="text-gray-700 hover:text-red-600">Contact</a></li>
+                <li><Link href="/" className="text-gray-700 hover:text-red-600">Home</Link></li>
+                <li><Link href="#about" className="text-gray-700 hover:text-red-600">About PFAS</Link></li>
+                <li><Link href="#qualify" className="text-gray-700 hover:text-red-600">Do I Qualify?</Link></li>
+                <li><Link href="#contact" className="text-gray-700 hover:text-red-600">Contact</Link></li>
               </ul>
             </nav>
           </div>
@@ -49,10 +50,10 @@ export default function RootLayout({
               <div>
                 <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
                 <ul className="space-y-2">
-                  <li><a href="/" className="text-gray-300 hover:text-white">Home</a></li>
-                  <li><a href="#about" className="text-gray-300 hover:text-white">About PFAS</a></li>
-                  <li><a href="#qualify" className="text-gray-300 hover:text-white">Eligibility</a></li>
-                  <li><a href="#contact" className="text-gray-300 hover:text-white">Contact Us</a></li>
+                  <li><Link href="/" className="text-gray-300 hover:text-white">Home</Link></li>
+                  <li><Link href="#about" className="text-gray-300 hover:text-white">About PFAS</Link></li>
+                  <li><Link href="#qualify" className="text-gray-300 hover:text-white">Eligibility</Link></li>
+                  <li><Link href="#contact" className="text-gray-300 hover:text-white">Contact Us</Link></li>
                 </ul>
               </div>
               

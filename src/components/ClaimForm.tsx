@@ -11,6 +11,7 @@ import ExposureInfoStep from './form-steps/ExposureInfoStep';
 import LegalInfoStep from './form-steps/LegalInfoStep';
 import SuccessStep from './form-steps/SuccessStep';
 import DisqualifiedStep from './form-steps/DisqualifiedStep';
+import ClickToCall from './ClickToCall';
 import { GeolocationResponse } from '@/types';
 
 interface ClaimFormProps {
@@ -21,6 +22,21 @@ const ClaimForm: React.FC<ClaimFormProps> = ({ geolocationData }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isDisqualified, setIsDisqualified] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Check if the device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
   
   const methods = useForm<ClaimFormData>({
     resolver: zodResolver(claimFormSchema),
@@ -116,95 +132,110 @@ const ClaimForm: React.FC<ClaimFormProps> = ({ geolocationData }) => {
   };
 
   if (isDisqualified) {
-    return <DisqualifiedStep />;
+    return (
+      <>
+        <DisqualifiedStep />
+        <ClickToCall phoneNumber="8005551234" />
+      </>
+    );
   }
 
   if (isSubmitted) {
-    return <SuccessStep />;
+    return (
+      <>
+        <SuccessStep />
+        <ClickToCall phoneNumber="8005551234" />
+      </>
+    );
   }
 
   const CurrentStepComponent = steps[currentStep].component;
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          {steps.map((step, index) => (
-            <div 
-              key={step.id}
-              className={`flex flex-col items-center ${index <= currentStep ? 'text-blue-600' : 'text-gray-400'}`}
-            >
+    <>
+      <div className="max-w-2xl mx-auto bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex justify-between items-center mb-4">
+            {steps.map((step, index) => (
               <div 
-                className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${
-                  index < currentStep 
-                    ? 'bg-blue-600 text-white' 
-                    : index === currentStep 
-                      ? 'border-2 border-blue-600 text-blue-600' 
-                      : 'border-2 border-gray-300 text-gray-400'
-                }`}
+                key={step.id}
+                className={`flex flex-col items-center ${index <= currentStep ? 'text-blue-600' : 'text-gray-400'}`}
               >
-                {index < currentStep ? '✓' : index + 1}
+                <div 
+                  className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center mb-1 text-xs sm:text-sm ${
+                    index < currentStep 
+                      ? 'bg-blue-600 text-white' 
+                      : index === currentStep 
+                        ? 'border-2 border-blue-600 text-blue-600' 
+                        : 'border-2 border-gray-300 text-gray-400'
+                  }`}
+                >
+                  {index < currentStep ? '✓' : index + 1}
+                </div>
+                <span className="text-[10px] sm:text-xs md:text-sm">{isMobile ? step.id.charAt(0).toUpperCase() : step.title}</span>
               </div>
-              <span className="text-xs hidden sm:block">{step.title}</span>
-            </div>
-          ))}
+            ))}
+          </div>
+          <div className="relative h-2 bg-gray-200 rounded-full">
+            <div 
+              className="absolute top-0 left-0 h-2 bg-blue-600 rounded-full transition-all duration-300"
+              style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
+            ></div>
+          </div>
         </div>
-        <div className="relative h-2 bg-gray-200 rounded-full">
-          <div 
-            className="absolute top-0 left-0 h-2 bg-blue-600 rounded-full transition-all duration-300"
-            style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
-          ></div>
-        </div>
-      </div>
 
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={variants}
-              transition={{ duration: 0.3 }}
-            >
-              <h2 className="text-2xl font-bold mb-6">{steps[currentStep].title}</h2>
-              <CurrentStepComponent geolocationData={geolocationData} />
-            </motion.div>
-          </AnimatePresence>
-
-          <div className="mt-8 flex justify-between">
-            {currentStep > 0 && (
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={goToPreviousStep}
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentStep}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={variants}
+                transition={{ duration: 0.3 }}
               >
-                Previous
-              </Button>
-            )}
-            
-            <div className={`${currentStep > 0 ? 'ml-auto' : ''}`}>
-              {currentStep < steps.length - 1 ? (
+                <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">{steps[currentStep].title}</h2>
+                <CurrentStepComponent geolocationData={geolocationData} />
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="mt-6 sm:mt-8 flex justify-between">
+              {currentStep > 0 && (
                 <Button 
                   type="button" 
-                  onClick={goToNextStep}
+                  variant="outline" 
+                  onClick={goToPreviousStep}
                 >
-                  Next
-                </Button>
-              ) : (
-                <Button 
-                  type="submit" 
-                  variant="primary"
-                >
-                  Submit Claim
+                  Previous
                 </Button>
               )}
+              
+              <div className={`${currentStep > 0 ? 'ml-auto' : ''}`}>
+                {currentStep < steps.length - 1 ? (
+                  <Button 
+                    type="button" 
+                    onClick={goToNextStep}
+                  >
+                    Next
+                  </Button>
+                ) : (
+                  <Button 
+                    type="submit" 
+                    variant="primary"
+                  >
+                    Submit Claim
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        </form>
-      </FormProvider>
-    </div>
+          </form>
+        </FormProvider>
+      </div>
+      
+      {/* Add the Click-to-Call button */}
+      <ClickToCall phoneNumber="8005551234" />
+    </>
   );
 };
 

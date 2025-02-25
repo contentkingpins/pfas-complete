@@ -96,7 +96,13 @@ const InjuryInfoStep: React.FC = () => {
             options={yearOptions}
             error={errors.injuryInfo?.diagnosisYear?.message}
             helperText="Select the year you were diagnosed"
-            {...field}
+            onChange={(e) => {
+              const yearValue = e.target.value ? parseInt(e.target.value, 10) : undefined;
+              field.onChange(yearValue);
+            }}
+            value={field.value?.toString() || ''}
+            onBlur={field.onBlur}
+            name={field.name}
           />
         )}
       />

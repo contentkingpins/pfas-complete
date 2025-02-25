@@ -29,7 +29,16 @@ export const injuryInfoSchema = z.object({
     'Liver Disease',
     'High Cholesterol',
   ]).optional(),
-  diagnosisYear: z.number().min(1900).max(new Date().getFullYear()).optional(),
+  diagnosisYear: z.union([
+    z.string().refine(val => {
+      if (!val) return true; // Allow empty string
+      const year = parseInt(val, 10);
+      return !isNaN(year) && year >= 1900 && year <= new Date().getFullYear();
+    }, {
+      message: `Year must be between 1900 and ${new Date().getFullYear()}`,
+    }),
+    z.number().min(1900).max(new Date().getFullYear())
+  ]).optional(),
 }).refine(
   (data) => {
     if (data.injuryType === 'Cancer') {

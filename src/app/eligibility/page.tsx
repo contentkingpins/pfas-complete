@@ -25,10 +25,18 @@ export default function Eligibility() {
     const { name, value, type } = e.target;
     const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
     
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    // Special handling for diagnosisYear to ensure it's a number when needed
+    if (name === 'diagnosisYear') {
+      setFormData({
+        ...formData,
+        [name]: value, // Keep as string in the form state
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === 'checkbox' ? checked : value,
+      });
+    }
   };
   
   const handleNext = () => {

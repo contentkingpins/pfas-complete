@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import TestimonialCard, { Testimonial } from './TestimonialCard';
 import { GeolocationResponse } from '@/types';
 import Link from "next/link";
+import Button from './Button';
 
 // Base testimonials data
 const baseTestimonials: Testimonial[] = [
@@ -138,7 +139,28 @@ interface TestimonialsSectionProps {
 
 const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ geolocationData }) => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(baseTestimonials);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [autoplay, setAutoplay] = useState(true);
+  const [displayCount, setDisplayCount] = useState(3);
+  
+  // Determine how many testimonials to display based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setDisplayCount(1);
+      } else if (window.innerWidth < 1024) {
+        setDisplayCount(2);
+      } else {
+        setDisplayCount(3);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
+  // Set up testimonials based on geolocation
   useEffect(() => {
     if (geolocationData?.locationName) {
       // Extract state from location name (assuming format like "City, State")
@@ -179,59 +201,148 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ geolocationDa
     // Default to base testimonials
     setTestimonials(baseTestimonials);
   }, [geolocationData]);
+  
+  // Auto-rotate testimonials
+  useEffect(() => {
+    if (!autoplay) return;
+    
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % Math.max(1, testimonials.length - displayCount + 1));
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [autoplay, testimonials.length, displayCount, activeIndex]);
+  
+  const handlePrev = () => {
+    setAutoplay(false);
+    setActiveIndex((prev) => Math.max(0, prev - 1));
+  };
+  
+  const handleNext = () => {
+    setAutoplay(false);
+    setActiveIndex((prev) => Math.min(testimonials.length - displayCount, prev + 1));
+  };
+  
+  const visibleTestimonials = testimonials.slice(activeIndex, activeIndex + displayCount);
+  
+  // Get a relevant heading based on geolocation
+  const getHeading = () => {
+    if (geolocationData?.isContaminated && geolocationData.zoneName) {
+      const zoneName = geolocationData.zoneName.toLowerCase();
+      
+      if (zoneName.includes('military') || zoneName.includes('camp') || zoneName.includes('base')) {
+        return "Military Personnel Who Fought Back";
+      } else if (zoneName.includes('factory') || zoneName.includes('plant') || zoneName.includes('industrial')) {
+        return "Industrial Workers Who Won Their Claims";
+      } else {
+        return "Community Members Who Secured Compensation";
+      }
+    }
+    
+    if (geolocationData?.locationName) {
+      return `Stories from People Like You`;
+    }
+    
+    return "Voices of PFAS: Real Stories, Real Results";
+  };
 
   return (
-    <section className="py-16 px-4 bg-gray-50">
-      <div className="container mx-auto max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Voices of PFAS: Real Stories, Real Results</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            These are the stories of real people who fought back against PFAS contamination and won. Their courage paved the way for others seeking justice.
-          </p>
-        </motion.div>
+    <div className="relative">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="text-center mb-12"
+      >
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">{getHeading()}</h2>
+        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          These are the stories of real people who fought back against PFAS contamination and won. Their courage paved the way for others seeking justice.
+        </p>
+      </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={testimonial.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 * index }}
-            >
-              <TestimonialCard testimonial={testimonial} />
-            </motion.div>
-          ))}
-        </div>
-        
-        <div className="mt-12 text-center">
-          <motion.p 
-            className="text-gray-600 mb-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
+      <div className="relative">
+        <div className="overflow-hidden">
+          <motion.div 
+            className="flex"
+            initial={false}
+            animate={{ x: `-${activeIndex * (100 / displayCount)}%` }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            Join thousands of Americans who have successfully claimed compensation for PFAS exposure.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1 }}
-          >
-            <Link 
-              href="/" 
-              className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
-            >
-              Check Your Eligibility Now
-            </Link>
+            <AnimatePresence>
+              {testimonials.map((testimonial, index) => (
+                <motion.div
+                  key={testimonial.id}
+                  className={`w-full md:w-1/${displayCount} flex-shrink-0 px-4`}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  <TestimonialCard testimonial={testimonial} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </motion.div>
         </div>
+        
+        {/* Navigation controls */}
+        {testimonials.length > displayCount && (
+          <div className="flex justify-center mt-8 space-x-4">
+            <motion.button
+              className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handlePrev}
+              disabled={activeIndex === 0}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </motion.button>
+            
+            <motion.button
+              className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleNext}
+              disabled={activeIndex >= testimonials.length - displayCount}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </motion.button>
+          </div>
+        )}
       </div>
-    </section>
+      
+      <motion.div 
+        className="mt-12 text-center"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        viewport={{ once: true }}
+      >
+        <p className="text-gray-600 mb-6">
+          Join thousands of Americans who have successfully claimed compensation for PFAS exposure.
+        </p>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button 
+            size="lg"
+            onClick={() => {
+              // Scroll to top of page
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          >
+            Check Your Eligibility Now
+          </Button>
+        </motion.div>
+      </motion.div>
+    </div>
   );
 };
 

@@ -16,9 +16,10 @@ import { GeolocationResponse } from '@/types';
 
 interface ClaimFormProps {
   geolocationData?: GeolocationResponse;
+  onBack?: () => void;
 }
 
-const ClaimForm: React.FC<ClaimFormProps> = ({ geolocationData }) => {
+const ClaimForm: React.FC<ClaimFormProps> = ({ geolocationData, onBack }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isDisqualified, setIsDisqualified] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -152,7 +153,25 @@ const ClaimForm: React.FC<ClaimFormProps> = ({ geolocationData }) => {
   const CurrentStepComponent = steps[currentStep].component;
 
   return (
-    <>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {onBack && !isSubmitted && !isDisqualified && (
+        <div className="mb-6">
+          <Button 
+            variant="outline" 
+            onClick={onBack} 
+            size="sm"
+            className="flex items-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Home
+          </Button>
+        </div>
+      )}
+      
+      <h1 className="text-3xl font-bold text-center mb-8">PFAS Claim Form</h1>
+      
       <div className="max-w-2xl mx-auto bg-white p-4 sm:p-6 rounded-lg shadow-lg">
         <div className="mb-6 sm:mb-8">
           <div className="flex justify-between items-center mb-4">
@@ -235,7 +254,7 @@ const ClaimForm: React.FC<ClaimFormProps> = ({ geolocationData }) => {
       
       {/* Add the Click-to-Call button */}
       <ClickToCall phoneNumber="8005551234" />
-    </>
+    </div>
   );
 };
 

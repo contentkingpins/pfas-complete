@@ -84,3 +84,21 @@ body {
  * Note: The viewport height fix is now implemented in the ViewportHeightFix component.
  * This CSS variable (--vh) is set by that component.
  */
+
+@layer utilities {
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s infinite;
+  }
+  
+  @keyframes pulse-subtle {
+    0% {
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+  }
+}
